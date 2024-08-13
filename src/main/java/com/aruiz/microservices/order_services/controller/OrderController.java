@@ -29,4 +29,11 @@ public class OrderController {
         return orderService.findAllOrders();
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public OrderResponse findOrderById(@PathVariable Long id) {
+        return orderService.findOrderById(id);
+    }
+
+
 }

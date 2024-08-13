@@ -12,10 +12,6 @@ import org.springframework.context.annotation.Import;
 import io.restassured.RestAssured;
 import org.testcontainers.containers.MySQLContainer;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 
 @Import(TestcontainersConfiguration.class)
@@ -96,7 +92,6 @@ class OrderServicesApplicationTests {
 				.then()
 				.statusCode(201);
 
-		// Verificar los detalles específicos de los pedidos
 		RestAssured.given()
 				.contentType("application/json")
 				.when()
@@ -112,5 +107,39 @@ class OrderServicesApplicationTests {
 				.body("[1].price", Matchers.equalTo(222.30f))
 				.body("[1].quantity", Matchers.equalTo(23));
 	}
-	
+
+	@Test
+	void shouldSubmitFindOrderById() {
+		String submitOrderJson1 = """
+            {
+                "skuCode" : "Test1",
+                "price" : 22.30,
+                "quantity" : 3
+            }
+            """;
+
+		String orderId = RestAssured.given()
+				.contentType("application/json")
+				.body(submitOrderJson1)
+				.when()
+				.post("/api/order")
+				.then()
+				.statusCode(201)
+				.extract()
+				.path("id");
+
+		RestAssured.given()
+				.contentType("application/json")
+				.when()
+				.get("/api/order/{id}", orderId)
+				.then()
+				.log().all()
+				.statusCode(200)
+				.body("size()", Matchers.is(1))
+				.body("$.skuCode", Matchers.equalTo("Test1"))
+				.body("$.price", Matchers.equalTo(22.30f))
+				.body("$.quantity", Matchers.equalTo(3));
+
+	}
+
 }

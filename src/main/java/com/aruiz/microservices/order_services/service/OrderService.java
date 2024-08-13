@@ -8,4 +8,5 @@ import java.util.List;
 public interface OrderService {
     void placeOrder(OrderRequest orderRequest);
     List<OrderResponse> findAllOrders();
+    OrderResponse findOrderById(Long id);
 }

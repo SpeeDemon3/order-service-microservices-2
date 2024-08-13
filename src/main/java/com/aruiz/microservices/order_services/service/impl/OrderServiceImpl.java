@@ -49,6 +49,20 @@ public class OrderServiceImpl implements OrderService {
         return null;
     }
 
+    @Override
+    public OrderResponse findOrderById(Long id) {
+
+        Optional<Order> optionalOrder = orderRepository.findById(id);
+
+        if (!optionalOrder.isEmpty()) {
+
+            return mapToOrderResponse(optionalOrder.get());
+
+        }
+
+        return null;
+    }
+
     private static Order mapToOrder(OrderRequest orderRequest) {
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
