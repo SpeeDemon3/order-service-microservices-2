@@ -1,5 +1,6 @@
 package com.aruiz.microservices.order_services.service.impl;
 
+import com.aruiz.microservices.order_services.client.InventoryClient;
 import com.aruiz.microservices.order_services.controller.dto.OrderRequest;
 import com.aruiz.microservices.order_services.controller.dto.OrderResponse;
 import com.aruiz.microservices.order_services.model.Order;
@@ -22,12 +23,21 @@ import java.util.UUID;
 public class OrderServiceImpl implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
+
 
     @Override
     public void placeOrder(OrderRequest orderRequest) {
         log.info("Request values: {}", orderRequest);
-        var order = mapToOrder(orderRequest);
-        orderRepository.save(order);
+        boolean inStock = inventoryClient.isInStock(orderRequest.skuCode(), orderRequest.quantity());
+
+        if (inStock) {
+            var order = mapToOrder(orderRequest);
+            orderRepository.save(order);
+        } else {
+            throw new RuntimeException("Product with Skucode " + orderRequest.skuCode() + "is not in stock");
+        }
+
     }
 
     @Override

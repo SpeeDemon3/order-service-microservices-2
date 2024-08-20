@@ -1,6 +1,7 @@
 package com.aruiz.microservices.order_services;
 
 import com.aruiz.microservices.order_services.controller.dto.OrderResponse;
+import com.aruiz.microservices.order_services.stub.InventoryStubs;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.jupiter.api.BeforeEach;
@@ -37,13 +38,14 @@ class OrderServicesApplicationTests {
 	@Test
 	void shouldSubmitOrder() {
 		String submitOrderJson = """
-				{
-					"skuCode" : "MacBook air M3",
-					"price" : 1800,
-					"quantity" : 1
-				}
-				""";
+                {
+                     "skuCode": "iphone_15",
+                     "price": 1000,
+                     "quantity": 1
+                }
+                """;
 
+		InventoryStubs.stubInventoryCall("iphone_15", 1);
 		var responseBodyString = RestAssured.given()
 				.contentType("application/json")
 				.body(submitOrderJson)
