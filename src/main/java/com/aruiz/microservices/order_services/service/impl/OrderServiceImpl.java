@@ -35,7 +35,7 @@ public class OrderServiceImpl implements OrderService {
             var order = mapToOrder(orderRequest);
             orderRepository.save(order);
         } else {
-            throw new RuntimeException("Product with Skucode " + orderRequest.skuCode() + "is not in stock");
+            throw new RuntimeException("Product with Skucode " + orderRequest.skuCode() + " is not in stock");
         }
 
     }
